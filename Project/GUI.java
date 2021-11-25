@@ -1,13 +1,20 @@
 import java.lang.reflect.InvocationTargetException;
 import java.awt.BorderLayout;
 import javax.swing.*;
+
 import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 public class GUI
 {
     int[] timeCases;
     int[] spaceCases;
     int[] bestCases;
+    int[] AmericanCurrency = {1,5,10,25,100,500,1000,2000,5000,10000};
     public GUI(int[] time, int[] space, int[] bestCase)
     {
         timeCases = time;
@@ -52,9 +59,11 @@ public class GUI
                 myPanel.add(new JLabel("How Much Money does it Cost?"));
                 myPanel.add(yField);
                 //---------------------------------------------------------------------
+                Console console = new Console();
+                console.hideFrame();
+
                 //Create Button to Activate Making Change
-                JButton getChange = new JButton("ATM Change Counter");
-                //Listen for when button is clicked to make change
+                JButton getChange = new JButton("ATM Change Counter");                //Listen for when button is clicked to make change
                 getChange.addActionListener(new ActionListener()
                 {
                     @Override
@@ -65,26 +74,52 @@ public class GUI
                         getChange.setVisible(false);
                         if(myPanel.isVisible())
                         {
-                            //Get User Input for both Money and Cost
-                            int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                                "Get Change", JOptionPane.OK_CANCEL_OPTION);
-                            if (result == JOptionPane.OK_OPTION) 
+                            boolean go = true;
+                            while(go)
                             {
-                                double money = Double.parseDouble(xField.getText()) * 100;
-                                double cost = Double.parseDouble(yField.getText()) * 100;
-                                int change = (int)(money - cost);
-                                if(change < 1)                              
-                                    System.out.println("You do not have enough money to make this purchase");
-                                else if(change == 0)
+                                //Get User Input for both Money and Cost
+                                int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                                    "Get Change", JOptionPane.OK_CANCEL_OPTION);
+                                if (result == JOptionPane.OK_OPTION) 
                                 {
-                                    System.out.println("You have the exact total and will not receive change for this purchase.");
+                                    console.erase();
+                                    double money = Double.parseDouble(xField.getText()) * 100;
+                                    double cost = Double.parseDouble(yField.getText()) * 100;
+                                    int change = (int)(money - cost);
+                                    if(change < 1)                              
+                                        System.out.println("You do not have enough money to make this purchase");
+                                        
+                                    else if(change == 0)
+                                    {
+                                        System.out.println("You have the exact total and will not receive change for this purchase.");
+                                        break;
+                                    }
+                                    else
+                                    { 
+                                        System.out.printf("Your change is: $ %.2f\n", (float)(change) / 100);
+                                        System.out.println("You will receive these coins:");
+                                        System.out.print("Penny:\nNickel:\nDime:\nQuarter:\n$1:\n$5:\n$10:\n$20:\n$50:\n$100:");
+                                        go = false;
+                                        console.frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                                            public void windowClosing(java.awt.event.WindowEvent e) {
+                                                console.hideFrame();
+                                                getChange.setVisible(true);
+                                                myPanel.setVisible(false);
+                                            }
+                                        });
+                                        
+                                    }
+                                    console.frame.setLocation(215,240);
+                                    console.getFrame();
+                                    console.showFrame();                                    
                                 }
                                 else
                                 {
-                                    //Insert Algorithms or something
-                                    myPanel.add(new JLabel("Your change is :" + change));
+                                    console.hideFrame();
+                                    getChange.setVisible(true);
+                                    myPanel.setVisible(false);
+                                    go = false;
                                 }
-
                             }
                         }
                     }
@@ -148,17 +183,70 @@ public class GUI
         
             });
         }
-        catch(InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        catch(InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        catch(InvocationTargetException e){}
+        catch(InterruptedException e){}
         catch(NumberFormatException e)
         {
             System.out.println("You have not entered a numerical value and therefore cannot make change");
         }
+    }
+}
+
+
+
+class Console 
+{
+    final JFrame frame = new JFrame();
+    JTextArea textArea;
+
+    public Console()
+    {
+        textArea = createTextArea();
+        frame.add(textArea);
+        frame.pack();
+        frame.setVisible(true);
+
+        redirectOut();
+    }
+    private JTextArea createTextArea()
+    {
+        textArea = new JTextArea(5, 50);
+        textArea.setBackground(Color.WHITE);
+        textArea.setForeground(Color.BLACK);
+        textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 36));
+        textArea.setEditable(false);
+        return textArea;
+    }
+    public PrintStream redirectOut() {
+        OutputStream out = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                textArea.append(String.valueOf((char) b));
+            }
+        };
+        PrintStream ps = new PrintStream(out);
+
+        System.setOut(ps);
+        System.setErr(ps);
+
+        return ps;
+    }
+
+    public void erase()
+    {
+        frame.remove(textArea);
+        textArea = createTextArea();
+        frame.add(textArea);
+    }
+    public void hideFrame()
+    {
+        frame.setVisible(false);
+    }
+    public void showFrame()
+    {
+        frame.setVisible(true);
+    }
+    public JFrame getFrame() {
+        return frame;
     }
 }
