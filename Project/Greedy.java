@@ -6,7 +6,7 @@ public class Greedy
     private int[] setValues;
     private int targetValue;
     private int bestSize;
-    ArrayList<Integer> change = new ArrayList<Integer>();
+    private int[] change;
 
     Greedy(int[] mySet, int myTarget)
     {
@@ -17,6 +17,7 @@ public class Greedy
 
     private int getGreedy(int[] set, int target)
     {
+        change = new int[set.length];
         int totalCounter = 0;
         int currentTarget = target;
         int size = set.length;
@@ -26,7 +27,7 @@ public class Greedy
             {
                 for(int x = 0; x < target / set[i]; ++x)
                 {
-                    change.add(target / set[i]);
+                    change[i] = currentTarget / set[i];
                 }
                 totalCounter += currentTarget / set[i];
                 currentTarget %= set[i];
@@ -45,8 +46,8 @@ public class Greedy
         return bestSize;
     }
     
-    public Object[] getChange()
+    public int[] getChange()
     {
-        return change.toArray();
+        return change;
     }
 }

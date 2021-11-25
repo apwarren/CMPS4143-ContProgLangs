@@ -15,6 +15,7 @@ public class GUI
     int[] spaceCases;
     int[] bestCases;
     int[] AmericanCurrency = {1,5,10,25,100,500,1000,2000,5000,10000};
+    int[] allChange;
     public GUI(int[] time, int[] space, int[] bestCase)
     {
         timeCases = time;
@@ -96,9 +97,21 @@ public class GUI
                                     }
                                     else
                                     { 
+                                        console.changeFontSize(18);
+                                        allChange = changeAmounts(change);
                                         System.out.printf("Your change is: $ %.2f\n", (float)(change) / 100);
                                         System.out.println("You will receive these coins:");
-                                        System.out.print("Penny:\nNickel:\nDime:\nQuarter:\n$1:\n$5:\n$10:\n$20:\n$50:\n$100:");
+                                        System.out.println("$  0.01: " + allChange[0]);
+                                        System.out.println("$  0.05: " + allChange[1]);
+                                        System.out.println("$  0.10: " + allChange[2]);
+                                        System.out.println("$  0.25: " + allChange[3]);
+                                        System.out.println("$  1.00: " + allChange[4]);
+                                        System.out.println("$  5.00: " + allChange[5]);
+                                        System.out.println("$ 10.00: " + allChange[6]);
+                                        System.out.println("$ 20.00: " + allChange[7]);
+                                        System.out.println("$ 50.00: " + allChange[8]);
+                                        System.out.println("$100.00: " + allChange[9]);
+
                                         go = false;
                                         console.frame.addWindowListener(new java.awt.event.WindowAdapter() {
                                             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -190,6 +203,21 @@ public class GUI
             System.out.println("You have not entered a numerical value and therefore cannot make change");
         }
     }
+
+    private int[] changeAmounts(int total)
+    {
+        Greedy greed = new Greedy(AmericanCurrency, total);
+        NumWithRemainder remain = new NumWithRemainder(AmericanCurrency, total);
+
+        if(greed.BestCase() <= remain.BestCase())
+        {
+            return greed.getChange();
+        }
+        else
+        {
+            return remain.getChange();
+        }
+    }
 }
 
 
@@ -210,7 +238,7 @@ class Console
     }
     private JTextArea createTextArea()
     {
-        textArea = new JTextArea(5, 50);
+        textArea = new JTextArea(7, 50);
         textArea.setBackground(Color.WHITE);
         textArea.setForeground(Color.BLACK);
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 36));
@@ -232,6 +260,10 @@ class Console
         return ps;
     }
 
+    public void changeFontSize(int size)
+    {
+     textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));   
+    }
     public void erase()
     {
         frame.remove(textArea);

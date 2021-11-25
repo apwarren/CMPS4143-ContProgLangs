@@ -1,11 +1,9 @@
-import java.util.ArrayList;
-
 public class NumWithRemainder
 {
     private int[] setValues;
     private int targetValue;
     private int bestSize;
-    ArrayList<Integer> change = new ArrayList<Integer>();
+    private int[]change;
 
     NumWithRemainder(int[] mySet, int myTarget)
     {
@@ -16,10 +14,11 @@ public class NumWithRemainder
 
     private int useRemainder(int[] set, int target)
     {
+        change = new int[set.length];
         int totalCounter = 0;
         int remainderCounter = target;
         int currentTarget = target;
-        int remainder;
+        int remainder = -1;
         int size = set.length;
         boolean remainderFound =false;
         for(int i = size - 1; i >= 0; --i)
@@ -29,27 +28,27 @@ public class NumWithRemainder
                 totalCounter += currentTarget / set[i];
                 currentTarget %= set[i];
             }
-
             if(set[i] < target && !remainderFound)
             {
                 remainder = target % set[i];
                 if(RemainderSearch(remainder) || remainder == 0) //The remainder is also in list
-                {
-                    for(int x = 0; x < target / set[i]; ++x)
-                    {
-                        change.add(target / set[i]);
-                    }
+                {  
                     if(remainder == 0)
                     {
+                        change[i] = target / set[i];
                         remainderCounter = target / set[i];
                     }
                     else
                     {
+                    change[i] = target / set[i];
                     remainderCounter = ((target / set[i]) + 1); //Leave method/ remainder is found so one extra number
-                    change.add(target % set[i]);
                     }
                     remainderFound = true;
                 }
+            }
+            if(currentTarget == 0) 
+            {
+                break;
             }
             
         }
@@ -63,22 +62,25 @@ public class NumWithRemainder
     }
     private boolean RemainderSearch(int remainder)
     {
-        int l = 0, r = setValues.length - 1;
-        while (l <= r) 
+        int left = 0, right = setValues.length - 1;
+        while (left <= right) 
         {
-            int m = l + (r - l) / 2;
+            int mid = left + (right - left) / 2;
   
             // Check if x is present at mid
-            if (setValues[m] == remainder)
+            if (setValues[mid] == remainder)
+            {
+                change[mid] = 1;
                 return true;
+            }
   
             // Remainder is greater
-            if (setValues[m] < remainder)
-                l = m + 1;
+            if (setValues[mid] < remainder)
+                left = mid + 1;
   
             //Remainder is smaller
             else
-                r = m - 1;
+                right = mid - 1;
         }
   
         return false; //Remainder is not in set
@@ -89,8 +91,9 @@ public class NumWithRemainder
         return bestSize;
     }
 
-    public Object[] getChange()
+    public int[] getChange()
     {
-        return change.toArray();
+        return change;
     }
 }
+
