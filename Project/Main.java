@@ -2,14 +2,35 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+/**
+ * public   :   Main
+ *  This class is the driver class intended
+ *  to run and implement the three algorithms
+ *  used to determine how effective they are
+ *  when it comes to getting the least amount of 
+ *  change for a given target value. After collecting
+ *  all of the data for each algorithm's complexities,
+ *  they are then sent to a GUI class intended to 
+ *  display the contents of the project's results to the
+ *  user. For both the time and accuracy complexities, 
+ *  when given a test of test cases, the two data sets
+ *  display the overall sum of all test case complexities.
+ *  The time complexity is recorded using nanoTime and then
+ *  divided in order to obtain a number that is close
+ *  in value to the other complexities results when 
+ *  viewed in the bar graph.
+ */
 public class Main
 {
     public static void main(String[] args) throws IOException, FileNotFoundException
     {
+        //Create objects for all three algorithms
         NumWithRemainder RemainderAlgo;
         Greedy greedyAlgo;
-        int[] AlgoCases = {0, 0, 0};
-        int[] TimeCases = {0, 0, 0};
+
+        //Create data sets of size 3 to store each algorithms data
+        int[] AlgoCases = {0, 0, 0};    //Store accuracy of each algorithm
+        int[] TimeCases = {0, 0, 0};    //Store time complexity of each algorithm
 
         try
         {
@@ -22,6 +43,7 @@ public class Main
             //Current test case being tested
             String test;
             int[] currentSet = new int[0];
+
             while(scan.hasNextInt())
             {
                 //Get line of data for current change set
@@ -32,41 +54,54 @@ public class Main
                 int size = test.replaceAll("[^ ]", "").length();
                 //Initialize size of integer array for the set
                 currentSet = new int[size];
+                
                 //Store all values in line into integer array
-
                 for(int i = 0; i < size; i++)
                 {
+                    //Add value into current set
                     currentSet[i] = fullSet.nextInt();
                 }
+                //Last value given is the target value for the set
                 int targetVal = fullSet.nextInt();
-                RemainderAlgo = new NumWithRemainder(currentSet, targetVal);
-                greedyAlgo = new Greedy(currentSet, targetVal);
 
                 //long SpaceR = Instrumentation.getObjectSize();
+
+                //Record how long it takes to find all coins for standard greedy
                 long startTime = System.nanoTime();
-                AlgoCases[2] += RemainderAlgo.BestCase();
+                greedyAlgo = new Greedy(currentSet, targetVal); //Get how many coins it took
                 long endTime = System.nanoTime();
-                long durationR = (endTime - startTime) / 100;  //divide by 1000000 to get milliseconds.
+                long durationG = (endTime - startTime) / 2000; //get time in microseconds * 2
 
+                //Record how long it takes to find all coins while also checking for remainders
                 startTime = System.nanoTime();
-                AlgoCases[0] += greedyAlgo.BestCase();
+                RemainderAlgo = new NumWithRemainder(currentSet, targetVal);    //Get how many coins it took
                 endTime = System.nanoTime();
-                long durationG = (endTime - startTime) / 100;
+                long durationR = (endTime - startTime) / 2000; //get time in microseconds * 2
 
+              
+                //Add the amount of coins needed for set to accuracy counter
+                AlgoCases[2] += RemainderAlgo.BestCase();
+                AlgoCases[0] += greedyAlgo.BestCase();
 
+                //Add time it took for each algorithm to execute to time complexity counters
                 TimeCases[2] += durationR;
                 TimeCases[0] += durationG;
             }
+
+            //No longer reading in sets of data
             scan.close();
 
-            //Create GUI
+            //Create GUI and display results
             GUI display = new GUI(TimeCases, new int[]{1,2,3}, AlgoCases);
             display.getGUI();
 
              
         }  
+
+        //If an error occurs, show want happened and exit program
         catch(InterruptedException e)
         {
+            //Program got interrupted
             e.printStackTrace();
         }
         catch(InvocationTargetException e)
@@ -75,6 +110,7 @@ public class Main
         }
         catch(FileNotFoundException e)
         {
+            //The files containing the test cases is missing
             System.out.println("Cannot find the file you are looking for");
             e.printStackTrace();
         }
