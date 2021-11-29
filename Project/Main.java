@@ -70,13 +70,13 @@ public class Main
                 long startTime = System.nanoTime();
                 greedyAlgo = new Greedy(currentSet, targetVal); //Get how many coins it took
                 long endTime = System.nanoTime();
-                long durationG = (endTime - startTime) / 2000; //get time in microseconds * 2
+                long durationG = (endTime - startTime);
 
                 //Record how long it takes to find all coins while also checking for remainders
                 startTime = System.nanoTime();
                 RemainderAlgo = new NumWithRemainder(currentSet, targetVal);    //Get how many coins it took
                 endTime = System.nanoTime();
-                long durationR = (endTime - startTime) / 2000; //get time in microseconds * 2
+                long durationR = (endTime - startTime);
 
               
                 //Add the amount of coins needed for set to accuracy counter
@@ -86,13 +86,14 @@ public class Main
                 //Add time it took for each algorithm to execute to time complexity counters
                 TimeCases[2] += durationR;
                 TimeCases[0] += durationG;
+                        
             }
 
             //No longer reading in sets of data
             scan.close();
 
             //Create GUI and display results
-            GUI display = new GUI(TimeCases, new int[]{1,2,3}, AlgoCases);
+            GUI display = new GUI(TimeCases, new int[]{16,16,16}, AlgoCases);
             display.getGUI();
 
              
@@ -117,3 +118,4 @@ public class Main
         
     }
 }
+
