@@ -48,13 +48,13 @@ public class BarChart extends JInternalFrame
      * Returns:
      *      Void
      */
-    public BarChart(String appTitle, int[] time, int[] space, int[] accuracy) 
+    public BarChart(String appTitle, int[] time, int[] accuracy) 
     {  
       //Initialize all elements within the JInternalFrame including the title of the frame
       super(appTitle);
     
       // Create Dataset holding time, space, and accuracy complexities for 3 algorithms
-      CategoryDataset dataset = createDataset(time, space, accuracy);  
+      CategoryDataset dataset = createDataset(time, accuracy);  
         
       //Create chart to implement dataset into the form of a bar graph
       JFreeChart chart = ChartFactory.createBarChart
@@ -92,7 +92,7 @@ public class BarChart extends JInternalFrame
      * Returns:
      *      CategoryDataSet : set of data organized to be implemented into bar graph
      */
-    private CategoryDataset createDataset(int[] time, int[] space, int[] accuracy)
+    private CategoryDataset createDataset(int[] time, int[] accuracy)
     {  
       DefaultCategoryDataset dataset = new DefaultCategoryDataset();  
     
@@ -100,11 +100,6 @@ public class BarChart extends JInternalFrame
       dataset.addValue(time[0], "Standard", "Time");
       dataset.addValue(time[1], "With Multiple Finder", "Time");  
       dataset.addValue(time[2], "With Remainder Finder", "Time");  
-    
-      //Add Space Complexities
-      dataset.addValue(space[0], "Standard", "Space");  
-      dataset.addValue(space[1], "With Multiple Finder", "Space");  
-      dataset.addValue(space[2], "With Remainder Finder", "Space");  
     
       //Add Accuracy of each algorithm
       dataset.addValue(accuracy[0], "Standard", "Accuracy");  
