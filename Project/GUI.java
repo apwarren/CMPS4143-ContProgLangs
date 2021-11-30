@@ -103,7 +103,7 @@ public class GUI
                 //-----------------------------------------------------------------------
 
                 //Create Bar chart Showing tested data for complexities
-                BarChart chart = new BarChart("Variables", timeCases, new int[]{1,2,3}, bestCases);           
+                BarChart chart = new BarChart("Variables", timeCases, new int[]{16,16,16}, bestCases);           
                 chart.pack();
                 chart.setLocation(20, 40);  //Place graph in middle of main frame
                 chart.setSize(950, 500);    //Make graph slightly smaller then the main frame
@@ -331,8 +331,14 @@ public class GUI
         }
 
         //If there was an error when trying to show the GUI catch it and leave program
-        catch(InvocationTargetException e){}
-        catch(InterruptedException e){}
+        catch(InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         //The user did not enter numerical values to make change with
         catch(NumberFormatException e)
         {
@@ -362,14 +368,18 @@ public class GUI
         Greedy greed = new Greedy(AmericanCurrency, total);
         //Create and run the greedy algorithm that also seeks out numbers with remainders
         NumWithRemainder remain = new NumWithRemainder(AmericanCurrency, total);
+        NumWithMultiple multiple = new NumWithMultiple(AmericanCurrency, total);
 
-        //The other two algorithms did not make change smaller than the standard greedy
-        if(greed.BestCase() <= remain.BestCase())
+        if(greed.BestCase() <= multiple.BestCase())
         {
             //Return coin amounts
             return greed.getChange();
         }
-        else    //The algorithm with a remainder had the fewest coins needed to make change
+        else if (multiple.BestCase() <= remain.BestCase())
+        {
+            return multiple.getChange();
+        }
+        else
         {
             //Return coin amounts
             return remain.getChange();

@@ -26,6 +26,7 @@ public class Main
     {
         //Create objects for all three algorithms
         NumWithRemainder RemainderAlgo;
+        NumWithMultiple MultipleAlgo;
         Greedy greedyAlgo;
 
         //Create data sets of size 3 to store each algorithms data
@@ -72,6 +73,12 @@ public class Main
                 long endTime = System.nanoTime();
                 long durationG = (endTime - startTime);
 
+                //Record how long it takes to find all coins while also checking for multiples
+                startTime = System.nanoTime();
+                MultipleAlgo = new NumWithMultiple(currentSet, targetVal);    //Get how many coins it took
+                endTime = System.nanoTime();
+                long durationM = (endTime - startTime);
+
                 //Record how long it takes to find all coins while also checking for remainders
                 startTime = System.nanoTime();
                 RemainderAlgo = new NumWithRemainder(currentSet, targetVal);    //Get how many coins it took
@@ -81,10 +88,12 @@ public class Main
               
                 //Add the amount of coins needed for set to accuracy counter
                 AlgoCases[2] += RemainderAlgo.BestCase();
+                AlgoCases[1] += MultipleAlgo.BestCase();
                 AlgoCases[0] += greedyAlgo.BestCase();
 
                 //Add time it took for each algorithm to execute to time complexity counters
                 TimeCases[2] += durationR;
+                TimeCases[1] += durationM;
                 TimeCases[0] += durationG;
                         
             }
@@ -118,4 +127,3 @@ public class Main
         
     }
 }
-
